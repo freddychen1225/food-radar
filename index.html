@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什麼？美食快搜</title>
+    <style>
+        :root {
+            --primary-color: #ff6b6b; /* 食慾紅 */
+            --secondary-color: #4ecdc4; /* 清新綠 */
+            --bg-color: #f7f9fc;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #636e72;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* 區塊樣式 */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            align-self: flex-start;
+            margin: 20px 0 10px 0;
+            padding-left: 5px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* 按鈕網格系統 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 一排三個 */
+            gap: 12px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .grid-container.scenarios {
+            grid-template-columns: repeat(2, 1fr); /* 情境一排兩個 */
+        }
+
+        /* 按鈕設計 */
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 選中狀態 */
+        .option-btn.selected {
+            border-color: var(--primary-color);
+            background-color: #fff0f0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 搜尋大按鈕 */
+        #search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 40px;
+            width: 100%;
+            max-width: 400px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #search-btn:active {
+            transform: scale(0.98);
+        }
+        
+        /* 圖示 emoji */
+        .icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>📍 美食雷達</h1>
+    <div class="subtitle">利用 Google Map 幫你決定吃什麼</div>
+
+    <!-- 步驟一：用餐情境 -->
+    <div class="section-title">1. 這次怎麼吃？(用餐人數)</div>
+    <div class="grid-container scenarios" id="scenario-container">
+        <button class="option-btn selected" data-keyword="" onclick="selectScenario(this)">
+            <span class="icon">🍴</span>
+            隨便吃吃
+        </button>
+        <button class="option-btn" data-keyword="適合單人" onclick="selectScenario(this)">
+            <span class="icon">👤</span>
+            1人獨享
+        </button>
+        <button class="option-btn" data-keyword="氣氛" onclick="selectScenario(this)">
+            <span class="icon">👥</span>
+            2人約會
+        </button>
+        <button class="option-btn" data-keyword="聚餐" onclick="selectScenario(this)">
+            <span class="icon">👨‍👩‍👧‍👦</span>
+            多人聚餐
+        </button>
+    </div>
+
+    <!-- 步驟二：想吃什麼 -->
+    <div class="section-title">2. 想吃哪種類型？</div>
+    <div class="grid-container" id="cuisine-container">
+        <!-- 常見分類 -->
+        <button class="option-btn" onclick="selectCuisine(this, '小吃')"><span class="icon">🍢</span>台灣小吃</button>
+        <button class="option-btn" onclick="selectCuisine(this, '牛肉麵')"><span class="icon">🍜</span>牛肉麵</button>
+        <button class="option-btn" onclick="selectCuisine(this, '便當')"><span class="icon">🍱</span>便當簡餐</button>
+        
+        <button class="option-btn" onclick="selectCuisine(this, '火鍋')"><span class="icon">🍲</span>火鍋</button>
+        <button class="option-btn" onclick="selectCuisine(this, '牛排')"><span class="icon">🥩</span>牛排</button>
+        <button class="option-btn" onclick="selectCuisine(this, '義大利麵')"><span class="icon">🍝</span>義大利麵</button>
+        
+        <button class="option-btn" onclick="selectCuisine(this, '早午餐')"><span class="icon">🥪</span>早午餐</button>
+        <button class="option-btn" onclick="selectCuisine(this, '日式料理')"><span class="icon">🍣</span>日式料理</button>
+        <button class="option-btn" onclick="selectCuisine(this, '健康餐盒')"><span class="icon">🥗</span>健康餐</button>
+    </div>
+
+    <!-- 執行按鈕 -->
+    <button id="search-btn" onclick="goSearch()">
+        🔍 開始搜尋美食
+    </button>
+
+    <script>
+        let selectedScenarioKeyword = "";
+        let selectedCuisineKeyword = "";
+
+        function selectScenario(btn) {
+            // 清除其他按鈕的選取狀態
+            document.querySelectorAll('#scenario-container .option-btn').forEach(b => b.classList.remove('selected'));
+            // 選取當前按鈕
+            btn.classList.add('selected');
+            selectedScenarioKeyword = btn.getAttribute('data-keyword');
+        }
+
+        function selectCuisine(btn, keyword) {
+            // 清除其他按鈕的選取狀態
+            document.querySelectorAll('#cuisine-container .option-btn').forEach(b => b.classList.remove('selected'));
+            // 選取當前按鈕
+            btn.classList.add('selected');
+            selectedCuisineKeyword = keyword;
+        }
+
+        function goSearch() {
+            if (!selectedCuisineKeyword) {
+                alert("請先選擇一種食物類型喔！(例如：牛肉麵)");
+                return;
+            }
+
+            // 組合關鍵字：例如 "附近 牛肉麵 聚餐"
+            // "附近" (nearby) 這個詞交給 Google Maps 自動判定，我們只要傳入食物關鍵字
+            let query = selectedCuisineKeyword;
+            
+            if (selectedScenarioKeyword) {
+                query += " " + selectedScenarioKeyword;
+            }
+
+            // 建立 Google Maps 搜尋連結
+            // 使用 query 參數，Google 會自動尋找使用者當前位置附近的這些地點
+            const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
+
+            // 在新分頁開啟
+            window.open(mapUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
