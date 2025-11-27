@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美食雷達 V2.1</title>
+    <title>美食雷達 V2.2</title>
     <style>
         :root {
             --primary-color: #ff6b6b; /* 食慾紅 */
@@ -162,7 +162,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.1</h1>
+    <h1>📍 美食雷達 V2.2</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <!-- 步驟一：模式切換 (分流) -->
@@ -221,33 +221,31 @@
             { name: "素食", icon: "🥬" }
         ];
 
-        // 這裡是最新的台灣下午茶清單
         const drinkCategories = [
             { name: "手搖飲", icon: "🧋" },
             { name: "咖啡廳", icon: "☕" },
             { name: "炸雞/鹽酥雞", icon: "🍗" },
-            { name: "車輪餅/雞蛋糕", icon: "🥞" }, /* 台灣經典 */
-            { name: "蔥油餅/抓餅", icon: "🌯" },   /* 台灣經典 */
+            { name: "車輪餅/雞蛋糕", icon: "🥞" },
+            { name: "蔥油餅/抓餅", icon: "🌯" },
             { name: "甜點/冰品", icon: "🍰" },
             { name: "麵包/甜甜圈", icon: "🍩" },
             { name: "章魚燒/小吃", icon: "🍡" }
         ];
 
         // --- 狀態變數 ---
-        let currentMode = 'meal'; // 'meal' or 'drink'
+        let currentMode = 'meal'; 
         let selectedScenarioKeyword = "";
         let selectedCuisineKeyword = "";
 
         // --- 初始化 ---
-        window.onload = function() {
-            renderCuisines(mealCategories); // 預設顯示正餐
-        };
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCuisines(mealCategories);
+        });
 
         // --- 模式切換功能 ---
         function switchMode(mode) {
             currentMode = mode;
             
-            // 1. 更新上方分頁樣式
             const btnMeal = document.getElementById('btn-meal');
             const btnDrink = document.getElementById('btn-drink');
             const body = document.body;
@@ -262,4 +260,67 @@
             } else {
                 btnMeal.className = 'mode-btn';
                 btnDrink.className = 'mode-btn active-drink';
-                body.classList.add('drink-
+                body.classList.add('drink-mode');
+                searchBtn.innerText = "🔍 搜尋下午茶";
+                renderCuisines(drinkCategories);
+            }
+            
+            selectedCuisineKeyword = "";
+        }
+
+        // --- 渲染按鈕 (穩定的事件監聽寫法) ---
+        function renderCuisines(list) {
+            const container = document.getElementById('cuisine-container');
+            container.innerHTML = ""; 
+
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="icon">${item.icon}</span>${item.name}`;
+                
+                // 綁定點擊事件
+                btn.addEventListener('click', function() {
+                    // 移除其他按鈕的選取狀態
+                    const allBtns = container.querySelectorAll('.option-btn');
+                    allBtns.forEach(b => b.classList.remove('selected'));
+                    
+                    // 設定當前按鈕選取狀態
+                    this.classList.add('selected');
+                    
+                    // 紀錄關鍵字
+                    selectedCuisineKeyword = item.name;
+                });
+
+                container.appendChild(btn);
+            });
+        }
+
+        // --- 選擇情境 ---
+        function selectScenario(btn) {
+            const container = document.getElementById('scenario-container');
+            const allBtns = container.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.remove('selected'));
+            
+            btn.classList.add('selected');
+            selectedScenarioKeyword = btn.getAttribute('data-keyword');
+        }
+
+        // --- 搜尋跳轉 ---
+        function goSearch() {
+            if (!selectedCuisineKeyword) {
+                const msg = currentMode === 'meal' ? "請先選擇想吃的正餐類型！" : "請先選擇想喝的飲料或點心！";
+                alert(msg);
+                return;
+            }
+
+            let query = selectedCuisineKeyword;
+            if (selectedScenarioKeyword) {
+                query += " " + selectedScenarioKeyword;
+            }
+
+            const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
+            window.open(mapUrl, '_blank');
+        }
+    </script>
+</body>
+</html>
