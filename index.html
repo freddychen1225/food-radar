@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美食雷達 V2.0</title>
+    <title>美食雷達 V2.1</title>
     <style>
         :root {
             --primary-color: #ff6b6b; /* 食慾紅 */
@@ -162,7 +162,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2</h1>
+    <h1>📍 美食雷達 V2.1</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <!-- 步驟一：模式切換 (分流) -->
@@ -221,12 +221,15 @@
             { name: "素食", icon: "🥬" }
         ];
 
+        // 這裡是最新的台灣下午茶清單
         const drinkCategories = [
             { name: "手搖飲", icon: "🧋" },
             { name: "咖啡廳", icon: "☕" },
             { name: "炸雞/鹽酥雞", icon: "🍗" },
+            { name: "車輪餅/雞蛋糕", icon: "🥞" }, /* 台灣經典 */
+            { name: "蔥油餅/抓餅", icon: "🌯" },   /* 台灣經典 */
             { name: "甜點/冰品", icon: "🍰" },
-            { name: "甜甜圈/麵包", icon: "🍩" },
+            { name: "麵包/甜甜圈", icon: "🍩" },
             { name: "章魚燒/小吃", icon: "🍡" }
         ];
 
@@ -259,58 +262,4 @@
             } else {
                 btnMeal.className = 'mode-btn';
                 btnDrink.className = 'mode-btn active-drink';
-                body.classList.add('drink-mode');
-                searchBtn.innerText = "🔍 搜尋下午茶";
-                renderCuisines(drinkCategories);
-            }
-            
-            // 清除已選的食物關鍵字
-            selectedCuisineKeyword = "";
-        }
-
-        // --- 渲染按鈕 ---
-        function renderCuisines(list) {
-            const container = document.getElementById('cuisine-container');
-            container.innerHTML = ""; // 清空
-
-            list.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.onclick = function() { selectCuisine(this, item.name); };
-                btn.innerHTML = `<span class="icon">${item.icon}</span>${item.name}`;
-                container.appendChild(btn);
-            });
-        }
-
-        // --- 選擇功能 ---
-        function selectScenario(btn) {
-            document.querySelectorAll('#scenario-container .option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedScenarioKeyword = btn.getAttribute('data-keyword');
-        }
-
-        function selectCuisine(btn, keyword) {
-            document.querySelectorAll('#cuisine-container .option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            selectedCuisineKeyword = keyword;
-        }
-
-        // --- 搜尋跳轉 ---
-        function goSearch() {
-            if (!selectedCuisineKeyword) {
-                const msg = currentMode === 'meal' ? "請先選擇想吃的正餐類型！" : "請先選擇想喝的飲料或點心！";
-                alert(msg);
-                return;
-            }
-
-            let query = selectedCuisineKeyword;
-            if (selectedScenarioKeyword) {
-                query += " " + selectedScenarioKeyword;
-            }
-
-            const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
-            window.open(mapUrl, '_blank');
-        }
-    </script>
-</body>
-</html>
+                body.classList.add('drink-
