@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美食雷達 V2.2</title>
+    <title>美食雷達 V2.3</title>
+    <!-- 引入不蒜子計數器腳本 (異步加載，不影響網頁速度) -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <style>
         :root {
             --primary-color: #ff6b6b; /* 食慾紅 */
@@ -153,16 +155,37 @@
         }
         #search-btn:active { transform: scale(0.98); }
 
+        /* --- 新增：人次計數器樣式 --- */
+        .counter-box {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #888;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.6);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
         .footer {
             margin-top: auto; padding-top: 40px; padding-bottom: 20px;
             font-size: 1.0rem; color: #888; font-weight: bold;
             letter-spacing: 1px; text-align: center;
         }
+
+        /* --- 新增：Footer 超連結樣式 --- */
+        .footer a {
+            color: #888; /* 繼承原本的顏色 */
+            text-decoration: underline; /* 強制底線 */
+            transition: color 0.2s;
+        }
+        .footer a:hover {
+            color: var(--primary-color); /* 滑鼠移過去變色 */
+        }
     </style>
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.2</h1>
+    <h1>📍 美食雷達 V2.3</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <!-- 步驟一：模式切換 (分流) -->
@@ -199,7 +222,15 @@
         🔍 搜尋正餐
     </button>
 
-    <div class="footer">Freddy & Gemini 3 Pro 設計協作</div>
+    <!-- 新增：人次計數器 (使用不蒜子 Site PV) -->
+    <div class="counter-box">
+        已有 <span id="busuanzi_value_site_pv">...</span> 人享用
+    </div>
+
+    <div class="footer">
+        <!-- Freddy 連結到 FB -->
+        <a href="https://www.facebook.com/profile.php?id=61577226729837" target="_blank">Freddy</a> & Gemini 3 Pro 設計協作
+    </div>
 
     <script>
         // --- 資料庫設定 ---
@@ -280,14 +311,10 @@
                 
                 // 綁定點擊事件
                 btn.addEventListener('click', function() {
-                    // 移除其他按鈕的選取狀態
                     const allBtns = container.querySelectorAll('.option-btn');
                     allBtns.forEach(b => b.classList.remove('selected'));
                     
-                    // 設定當前按鈕選取狀態
                     this.classList.add('selected');
-                    
-                    // 紀錄關鍵字
                     selectedCuisineKeyword = item.name;
                 });
 
