@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>美食雷達 V2.3</title>
-    <!-- 引入不蒜子計數器腳本 (異步加載，不影響網頁速度) -->
+    <title>美食雷達 V2.4</title>
+    <!-- 引入不蒜子計數器腳本 -->
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
     <style>
         :root {
             --primary-color: #ff6b6b; /* 食慾紅 */
             --secondary-color: #4ecdc4; /* 清新綠 */
             --drink-color: #e67e22; /* 飲料橘 */
+            --random-color: #9b59b6; /* 神秘紫 (隨機用) */
             --bg-color: #f7f9fc;
             --text-color: #2d3436;
         }
@@ -68,19 +69,8 @@
             transition: all 0.3s;
         }
 
-        /* 正餐模式啟用 */
-        .mode-btn.active-meal {
-            background-color: #fff0f0;
-            color: var(--primary-color);
-            box-shadow: 0 2px 5px rgba(255, 107, 107, 0.2);
-        }
-
-        /* 飲料模式啟用 */
-        .mode-btn.active-drink {
-            background-color: #fff5e6;
-            color: var(--drink-color);
-            box-shadow: 0 2px 5px rgba(230, 126, 34, 0.2);
-        }
+        .mode-btn.active-meal { background-color: #fff0f0; color: var(--primary-color); box-shadow: 0 2px 5px rgba(255, 107, 107, 0.2); }
+        .mode-btn.active-drink { background-color: #fff5e6; color: var(--drink-color); box-shadow: 0 2px 5px rgba(230, 126, 34, 0.2); }
 
         /* --- 選項網格 --- */
         .grid-container {
@@ -90,8 +80,6 @@
             width: 100%;
             max-width: 600px;
         }
-        
-        /* 情境只有兩個 */
         .grid-container.scenarios { grid-template-columns: repeat(2, 1fr); }
 
         .option-btn {
@@ -106,64 +94,60 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 70px; /* 統一高度 */
+            min-height: 70px;
         }
 
         .option-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-        
         .icon { font-size: 1.5rem; margin-bottom: 5px; }
 
-        /* 選中狀態 - 根據模式變色 */
-        .option-btn.selected {
-            border-color: var(--primary-color);
-            background-color: #fff0f0;
-            color: var(--primary-color);
-            font-weight: bold;
-        }
+        /* 選中狀態 */
+        .option-btn.selected { border-color: var(--primary-color); background-color: #fff0f0; color: var(--primary-color); font-weight: bold; }
+        body.drink-mode .option-btn.selected { border-color: var(--drink-color); background-color: #fff5e6; color: var(--drink-color); }
         
-        /* 飲料模式下的選中顏色 */
-        body.drink-mode .option-btn.selected {
-            border-color: var(--drink-color);
-            background-color: #fff5e6;
-            color: var(--drink-color);
-        }
-        
-        body.drink-mode #search-btn {
-            background-color: var(--drink-color);
-            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4);
-        }
-
-        /* 搜尋大按鈕 */
-        #search-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 18px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-top: 30px;
+        /* --- 底部按鈕區 (雙按鈕佈局) --- */
+        .action-area {
+            display: flex;
+            gap: 10px;
             width: 100%;
             max-width: 400px;
+            margin-top: 30px;
+        }
+
+        .action-btn {
+            border: none;
+            border-radius: 50px;
+            padding: 15px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: white;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 5px;
         }
-        #search-btn:active { transform: scale(0.98); }
+        .action-btn:active { transform: scale(0.96); }
 
-        /* --- 新增：人次計數器樣式 --- */
+        /* 搜尋按鈕 (左邊，比較大) */
+        #search-btn {
+            flex: 2;
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        body.drink-mode #search-btn { background-color: var(--drink-color); box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4); }
+
+        /* 隨機按鈕 (右邊，比較小) */
+        #random-btn {
+            flex: 1.2;
+            background-color: var(--random-color);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        }
+
         .counter-box {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: #888;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.6);
-            padding: 5px 15px;
-            border-radius: 20px;
+            margin-top: 15px; font-size: 0.9rem; color: #888; text-align: center;
+            background-color: rgba(255, 255, 255, 0.6); padding: 5px 15px; border-radius: 20px;
         }
 
         .footer {
@@ -171,24 +155,17 @@
             font-size: 1.0rem; color: #888; font-weight: bold;
             letter-spacing: 1px; text-align: center;
         }
+        .footer a { color: #888; text-decoration: underline; transition: color 0.2s; }
+        .footer a:hover { color: var(--primary-color); }
 
-        /* --- 新增：Footer 超連結樣式 --- */
-        .footer a {
-            color: #888; /* 繼承原本的顏色 */
-            text-decoration: underline; /* 強制底線 */
-            transition: color 0.2s;
-        }
-        .footer a:hover {
-            color: var(--primary-color); /* 滑鼠移過去變色 */
-        }
     </style>
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.3</h1>
+    <h1>📍 美食雷達 V2.4</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
-    <!-- 步驟一：模式切換 (分流) -->
+    <!-- 步驟一：模式切換 -->
     <div class="mode-switch">
         <button class="mode-btn active-meal" id="btn-meal" onclick="switchMode('meal')">🍱 找正餐</button>
         <button class="mode-btn" id="btn-drink" onclick="switchMode('drink')">🧋 下午茶</button>
@@ -197,38 +174,32 @@
     <!-- 步驟二：用餐情境 -->
     <div class="section-title">1. 用餐情境</div>
     <div class="grid-container scenarios" id="scenario-container">
-        <button class="option-btn selected" data-keyword="" onclick="selectScenario(this)">
-            <span class="icon">🍴</span>隨便吃吃
-        </button>
-        <button class="option-btn" data-keyword="適合單人" onclick="selectScenario(this)">
-            <span class="icon">👤</span>1人獨享
-        </button>
-        <button class="option-btn" data-keyword="氣氛" onclick="selectScenario(this)">
-            <span class="icon">👥</span>2人約會
-        </button>
-        <button class="option-btn" data-keyword="聚餐" onclick="selectScenario(this)">
-            <span class="icon">👨‍👩‍👧‍👦</span>多人聚餐
-        </button>
+        <button class="option-btn selected" data-keyword="" onclick="selectScenario(this)"><span class="icon">🍴</span>隨便吃吃</button>
+        <button class="option-btn" data-keyword="適合單人" onclick="selectScenario(this)"><span class="icon">👤</span>1人獨享</button>
+        <button class="option-btn" data-keyword="氣氛" onclick="selectScenario(this)"><span class="icon">👥</span>2人約會</button>
+        <button class="option-btn" data-keyword="聚餐" onclick="selectScenario(this)"><span class="icon">👨‍👩‍👧‍👦</span>多人聚餐</button>
     </div>
 
-    <!-- 步驟三：動態分類 (JS生成) -->
+    <!-- 步驟三：動態分類 -->
     <div class="section-title" id="type-title">2. 想吃什麼？</div>
-    <div class="grid-container" id="cuisine-container">
-        <!-- 按鈕會由 JavaScript 自動填入 -->
+    <div class="grid-container" id="cuisine-container"></div>
+
+    <!-- 雙按鈕區 -->
+    <div class="action-area">
+        <button id="search-btn" class="action-btn" onclick="goSearch()">
+            🔍 搜尋
+        </button>
+        <button id="random-btn" class="action-btn" onclick="goRandom()">
+            🎲 幫我選
+        </button>
     </div>
 
-    <!-- 執行按鈕 -->
-    <button id="search-btn" onclick="goSearch()">
-        🔍 搜尋正餐
-    </button>
-
-    <!-- 新增：人次計數器 (使用不蒜子 Site PV) -->
+    <!-- 人次計數器 -->
     <div class="counter-box">
-        已有 <span id="busuanzi_value_site_pv">...</span> 人享用美食囉
+        已有 <span id="busuanzi_value_site_pv">...</span> 人享用美食了
     </div>
 
     <div class="footer">
-        <!-- Freddy 連結到 FB -->
         <a href="https://www.facebook.com/profile.php?id=61577226729837" target="_blank">Freddy</a> & Gemini 3 Pro 設計協作
     </div>
 
@@ -268,15 +239,12 @@
         let selectedScenarioKeyword = "";
         let selectedCuisineKeyword = "";
 
-        // --- 初始化 ---
         document.addEventListener('DOMContentLoaded', function() {
             renderCuisines(mealCategories);
         });
 
-        // --- 模式切換功能 ---
         function switchMode(mode) {
             currentMode = mode;
-            
             const btnMeal = document.getElementById('btn-meal');
             const btnDrink = document.getElementById('btn-drink');
             const body = document.body;
@@ -286,20 +254,16 @@
                 btnMeal.className = 'mode-btn active-meal';
                 btnDrink.className = 'mode-btn';
                 body.classList.remove('drink-mode');
-                searchBtn.innerText = "🔍 搜尋正餐";
                 renderCuisines(mealCategories);
             } else {
                 btnMeal.className = 'mode-btn';
                 btnDrink.className = 'mode-btn active-drink';
                 body.classList.add('drink-mode');
-                searchBtn.innerText = "🔍 搜尋下午茶";
                 renderCuisines(drinkCategories);
             }
-            
             selectedCuisineKeyword = "";
         }
 
-        // --- 渲染按鈕 (穩定的事件監聽寫法) ---
         function renderCuisines(list) {
             const container = document.getElementById('cuisine-container');
             container.innerHTML = ""; 
@@ -308,43 +272,63 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerHTML = `<span class="icon">${item.icon}</span>${item.name}`;
+                btn.dataset.name = item.name; // 方便隨機選取時抓取
                 
-                // 綁定點擊事件
                 btn.addEventListener('click', function() {
                     const allBtns = container.querySelectorAll('.option-btn');
                     allBtns.forEach(b => b.classList.remove('selected'));
-                    
                     this.classList.add('selected');
                     selectedCuisineKeyword = item.name;
                 });
-
                 container.appendChild(btn);
             });
         }
 
-        // --- 選擇情境 ---
         function selectScenario(btn) {
             const container = document.getElementById('scenario-container');
             const allBtns = container.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.classList.remove('selected'));
-            
             btn.classList.add('selected');
             selectedScenarioKeyword = btn.getAttribute('data-keyword');
         }
 
-        // --- 搜尋跳轉 ---
         function goSearch() {
             if (!selectedCuisineKeyword) {
-                const msg = currentMode === 'meal' ? "請先選擇想吃的正餐類型！" : "請先選擇想喝的飲料或點心！";
-                alert(msg);
+                alert(currentMode === 'meal' ? "請先選擇正餐類型，或按「🎲 幫我選」！" : "請先選擇點心類型，或按「🎲 幫我選」！");
                 return;
             }
+            performSearch(selectedCuisineKeyword);
+        }
 
-            let query = selectedCuisineKeyword;
+        // --- 新增：隨機選擇功能 ---
+        function goRandom() {
+            const container = document.getElementById('cuisine-container');
+            const options = container.querySelectorAll('.option-btn');
+            
+            // 簡單的隨機動畫效果
+            const randomIndex = Math.floor(Math.random() * options.length);
+            const selectedBtn = options[randomIndex];
+            const keyword = selectedBtn.dataset.name;
+
+            // 視覺上選中它
+            const allBtns = container.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.classList.remove('selected'));
+            selectedBtn.classList.add('selected');
+            selectedCuisineKeyword = keyword;
+
+            // 延遲一點點再跳轉，讓使用者看到選了什麼
+            setTimeout(() => {
+                if(confirm(`命運決定吃：${keyword}！\n要現在出發嗎？`)) {
+                    performSearch(keyword);
+                }
+            }, 100);
+        }
+
+        function performSearch(keyword) {
+            let query = keyword;
             if (selectedScenarioKeyword) {
                 query += " " + selectedScenarioKeyword;
             }
-
             const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
             window.open(mapUrl, '_blank');
         }
