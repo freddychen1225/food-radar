@@ -28,8 +28,8 @@
     <meta name="theme-color" content="#f7f9fc">
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1046/1046747.png">
     
-    <!-- Android Manifest (簡易版) -->
-    <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoi576O6aOf6Zu36YGUIiwic2hvcnRfbmFtZSI6Iue+jumjn+mbt+mBlCIsImJhY2tncm91bmRfY29sb3IiOiIjZjdmOWZjIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJpY29ucyI6W3sic3JjIjoiaHR0cHM6Ly9jZG4taWNvbnS1wbmcuZmxhdGljb24uY29tLzUxMi8xMDQ2LzEwNDY3NDcucG5nIiwic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyJ9XX0=">
+    <!-- Android Manifest (標準版：請確認已在 GitHub 上傳 manifest.json 檔案) -->
+    <link rel="manifest" href="manifest.json">
 
     <!-- 引入不蒜子計數器腳本 -->
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
@@ -56,7 +56,6 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
-            /* 防止 iOS 下拉重新整理影響 App 體驗 */
             overscroll-behavior-y: none;
         }
 
@@ -99,7 +98,7 @@
             border-radius: 10px;
             transition: all 0.3s;
             white-space: nowrap;
-            -webkit-tap-highlight-color: transparent; /* 移除點擊高亮 */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .mode-btn.active-meal { background-color: #fff0f0; color: var(--primary-color); box-shadow: 0 2px 5px rgba(255, 107, 107, 0.2); }
