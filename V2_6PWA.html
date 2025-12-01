@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V2.6</title>
+    <title>美食雷達 V2.7</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
@@ -154,7 +154,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.6</h1>
+    <h1>📍 美食雷達 V2.7</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -230,6 +230,10 @@
         let selectedScenarioKeyword = "";
         let selectedCuisineKeyword = "";
 
+        // 檢查是否為 iOS 及 PWA 模式
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
+
         document.addEventListener('DOMContentLoaded', function() {
             renderCuisines(mealCategories);
             
@@ -238,22 +242,6 @@
                 if (/Android/i.test(navigator.userAgent)) {
                     const guide = document.getElementById('android-guide');
                     guide.classList.add('show');
-                }
-            });
-
-            // --- 解決 iOS PWA 切換回來白畫面 (強制重整版) ---
-            document.addEventListener('visibilitychange', function() {
-                if (document.visibilityState === 'visible') {
-                    // 如果 body 高度異常，代表畫面跑掉，直接重整
-                    if (document.body.offsetHeight === 0) {
-                        window.location.reload();
-                    } else {
-                        // 嘗試重繪
-                        document.body.style.display = 'none';
-                        requestAnimationFrame(() => {
-                            document.body.style.display = 'flex';
-                        });
-                    }
                 }
             });
         });
@@ -342,7 +330,16 @@
             let query = keyword;
             if (selectedScenarioKeyword) { query += " " + selectedScenarioKeyword; }
             const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
-            window.open(mapUrl, '_blank');
+            
+            // --- iOS PWA 跳轉處理 (選擇 B：強制跳轉) ---
+            if (isIOS && isPWA) {
+                // 使用 location.href 強制在當前視窗導航
+                // 這會讓 iOS 判斷為跳出 App，避免出現「完成」子視窗
+                window.location.href = mapUrl;
+            } else {
+                // Android 或 電腦版維持開新分頁
+                window.open(mapUrl, '_blank');
+            }
         }
     </script>
 </body>
