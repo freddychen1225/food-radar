@@ -117,31 +117,37 @@
         .footer a { color: #888; text-decoration: underline; transition: color 0.2s; }
         .footer a:hover { color: var(--primary-color); }
 
-        /* --- Android 安裝指引動畫 --- */
+        /* --- Android 安裝指引 (GIF 版) --- */
         .install-guide-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; visibility: hidden; transition: opacity 0.5s;
-            backdrop-filter: blur(3px);
+            background: rgba(0, 0, 0, 0.9); z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s;
         }
         .install-guide-overlay.show { opacity: 1; visibility: visible; }
         
-        .finger-anim {
-            font-size: 4rem; margin-bottom: 20px;
-            animation: swipeUp 2s infinite;
-        }
-        
-        .guide-text {
-            color: white; font-size: 1.3rem; font-weight: bold; text-align: center; line-height: 1.6;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        .guide-container {
+            background: white; width: 85%; max-width: 350px;
+            border-radius: 20px; padding: 20px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        @keyframes swipeUp {
-            0% { transform: translateY(40px); opacity: 0; }
-            30% { opacity: 1; }
-            70% { transform: translateY(-40px); opacity: 1; }
-            100% { transform: translateY(-40px); opacity: 0; }
+        .guide-title {
+            font-size: 1.4rem; font-weight: bold; color: var(--primary-color); margin-bottom: 5px;
+        }
+        
+        .guide-subtitle {
+            font-size: 0.95rem; color: #666; margin-bottom: 15px;
+        }
+
+        .guide-gif {
+            width: 100%; border-radius: 10px; border: 2px solid #eee; margin-bottom: 15px;
+        }
+
+        .close-guide-btn {
+            background: var(--primary-color); color: white; border: none;
+            padding: 10px 30px; border-radius: 50px; font-size: 1rem; font-weight: bold;
+            cursor: pointer; width: 100%;
         }
 
     </style>
@@ -190,13 +196,14 @@
         <a href="https://www.threads.net/@freddychen1225" target="_blank">Freddy</a> & Gemini 3 Pro 設計協作
     </div>
 
-    <!-- Android 安裝指引遮罩 -->
+    <!-- Android 安裝教學遮罩 -->
     <div id="android-guide" class="install-guide-overlay" onclick="this.classList.remove('show')">
-        <div class="finger-anim">👆</div>
-        <div class="guide-text">
-            安裝成功！<br>
-            請向上滑動打開列表<br>
-            將美食雷達拉到桌面
+        <div class="guide-container">
+            <div class="guide-title">🎉 安裝成功！</div>
+            <div class="guide-subtitle">請依照下方動畫，將圖示加到桌面</div>
+            <!-- 這裡放您的 GIF 檔案 -->
+            <img src="install-guide.gif" alt="安裝教學" class="guide-gif">
+            <button class="close-guide-btn" onclick="document.getElementById('android-guide').classList.remove('show')">我知道了</button>
         </div>
     </div>
 
@@ -226,21 +233,27 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderCuisines(mealCategories);
             
-            // --- Android 安裝後指引 (動畫版) ---
+            // --- Android 安裝後指引 (GIF 版) ---
             window.addEventListener('appinstalled', (evt) => {
                 if (/Android/i.test(navigator.userAgent)) {
                     const guide = document.getElementById('android-guide');
                     guide.classList.add('show');
-                    // 6秒後自動消失，或點擊消失
-                    setTimeout(() => { guide.classList.remove('show'); }, 6000);
                 }
             });
 
-            // --- 解決 iOS PWA 切換回來白畫面 ---
+            // --- 解決 iOS PWA 切換回來白畫面 (強制重整版) ---
             document.addEventListener('visibilitychange', function() {
                 if (document.visibilityState === 'visible') {
-                    document.body.style.opacity = '0.99';
-                    setTimeout(() => { document.body.style.opacity = '1'; }, 50);
+                    // 如果 body 高度異常，代表畫面跑掉，直接重整
+                    if (document.body.offsetHeight === 0) {
+                        window.location.reload();
+                    } else {
+                        // 嘗試重繪
+                        document.body.style.display = 'none';
+                        requestAnimationFrame(() => {
+                            document.body.style.display = 'flex';
+                        });
+                    }
                 }
             });
         });
