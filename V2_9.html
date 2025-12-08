@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V2.8</title>
+    <title>美食雷達 V2.9</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
@@ -31,7 +31,7 @@
         :root {
             --primary-color: #ff6b6b; --secondary-color: #4ecdc4; --drink-color: #e67e22;
             --special-color: #6c5ce7; --random-color: #9b59b6; --bg-color: #f7f9fc; --text-color: #2d3436;
-            --line-color: #06c755; /* LINE 官方綠色 */
+            --line-color: #06c755;
         }
 
         body {
@@ -74,11 +74,10 @@
             font-size: 0.95rem; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column;
             align-items: center; justify-content: center; min-height: 70px; -webkit-tap-highlight-color: transparent;
         }
-
         .option-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .option-btn.selected { border-color: var(--primary-color); background-color: #fff0f0; color: var(--primary-color); font-weight: bold; }
         .icon { font-size: 1.5rem; margin-bottom: 5px; }
 
-        .option-btn.selected { border-color: var(--primary-color); background-color: #fff0f0; color: var(--primary-color); font-weight: bold; }
         body.drink-mode .option-btn.selected { border-color: var(--drink-color); background-color: #fff5e6; color: var(--drink-color); }
         body.special-mode .option-btn.selected { border-color: var(--special-color); background-color: #f0eeff; color: var(--special-color); }
         
@@ -102,7 +101,6 @@
         #search-btn { flex: 2; background-color: var(--primary-color); box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4); }
         body.drink-mode #search-btn { background-color: var(--drink-color); box-shadow: 0 4px 15px rgba(230, 126, 34, 0.4); }
         body.special-mode #search-btn { background-color: var(--special-color); box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4); }
-
         #random-btn { flex: 1.2; background-color: var(--random-color); box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4); }
         body.special-mode #random-btn { display: none; }
 
@@ -119,48 +117,60 @@
         .footer a { color: #888; text-decoration: underline; transition: color 0.2s; }
         .footer a:hover { color: var(--primary-color); }
 
-        /* --- 推薦朋友按鈕 (常駐底部) --- */
+        /* 推薦朋友按鈕 */
         .share-btn-footer {
             background-color: var(--line-color); color: white; border: none;
             padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: bold;
             cursor: pointer; display: flex; align-items: center; gap: 5px;
             box-shadow: 0 2px 8px rgba(6, 199, 85, 0.3); margin-top: 10px;
         }
-        .share-btn-footer:active { transform: scale(0.98); }
 
-        /* --- Android/iOS 引導遮罩共用樣式 --- */
-        .install-guide-overlay {
+        /* --- 通用彈窗遮罩 --- */
+        .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9); z-index: 9999;
+            background: rgba(0, 0, 0, 0.85); z-index: 9999;
             display: flex; justify-content: center; align-items: center;
             opacity: 0; visibility: hidden; transition: opacity 0.3s;
+            backdrop-filter: blur(2px);
         }
-        .install-guide-overlay.show { opacity: 1; visibility: visible; }
+        .overlay.show { opacity: 1; visibility: visible; }
         
-        .guide-container {
-            background: white; width: 85%; max-width: 350px;
+        .modal-card {
+            background: white; width: 85%; max-width: 320px;
             border-radius: 20px; padding: 25px 20px; text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5); position: relative;
         }
 
-        .guide-title { font-size: 1.4rem; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
-        .guide-subtitle { font-size: 1.0rem; color: #555; margin-bottom: 20px; line-height: 1.5; }
+        .modal-title { font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .modal-text { font-size: 1.1rem; color: #333; margin-bottom: 25px; line-height: 1.5; }
         .guide-gif { width: 100%; border-radius: 10px; border: 2px solid #eee; margin-bottom: 15px; }
 
-        .close-guide-btn {
+        .modal-btn-group { display: flex; flex-direction: column; gap: 10px; }
+        
+        .btn-main {
             background: var(--primary-color); color: white; border: none;
-            padding: 10px 30px; border-radius: 50px; font-size: 1rem; font-weight: bold;
+            padding: 12px; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; width: 100%;
+        }
+        .btn-line {
+            background: var(--line-color); color: white; border: none;
+            padding: 12px; border-radius: 50px; font-size: 1.0rem; font-weight: bold;
+            cursor: pointer; width: 100%;
+        }
+        .btn-cancel {
+            background: #f1f2f6; color: #7f8fa6; border: none;
+            padding: 12px; border-radius: 50px; font-size: 1rem; font-weight: bold;
             cursor: pointer; width: 100%;
         }
 
-        /* iOS 引導專用圖示 */
+        /* iOS 引導專用 */
         .ios-share-icon { font-size: 1.5rem; vertical-align: middle; margin: 0 5px; color: #007aff; }
 
     </style>
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.8</h1>
+    <h1>📍 美食雷達 V2.9</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -199,7 +209,6 @@
     </div>
 
     <div class="footer">
-        <!-- 新增：推薦朋友按鈕 -->
         <button class="share-btn-footer" onclick="shareToFriend('general')">
             💬 推薦朋友
         </button>
@@ -208,27 +217,42 @@
         </div>
     </div>
 
-    <!-- Android 安裝教學遮罩 -->
-    <div id="android-guide" class="install-guide-overlay" onclick="this.classList.remove('show')">
-        <div class="guide-container">
-            <div class="guide-title">🎉 安裝成功！</div>
-            <div class="guide-subtitle">請依照下方動畫，將圖示加到桌面</div>
+    <!-- 1. Android 安裝引導 (GIF) -->
+    <div id="android-guide" class="overlay" onclick="this.classList.remove('show')">
+        <div class="modal-card">
+            <div class="modal-title">🎉 安裝成功！</div>
+            <div class="modal-text" style="margin-bottom:15px;">請依照下方動畫，將圖示加到桌面</div>
             <img src="install-guide.gif" alt="安裝教學" class="guide-gif">
-            <button class="close-guide-btn" onclick="document.getElementById('android-guide').classList.remove('show')">我知道了</button>
+            <button class="btn-main" onclick="document.getElementById('android-guide').classList.remove('show')">我知道了</button>
         </div>
     </div>
 
-    <!-- iOS 安裝教學遮罩 (新增) -->
-    <div id="ios-guide" class="install-guide-overlay">
-        <div class="guide-container">
-            <div class="guide-title">😋 餓肚子不能等！</div>
-            <div class="guide-subtitle" style="text-align: left;">
-                發現您蠻常來找美食的！把雷達加到桌面，下次肚子餓時，比別人<b>快 10 秒</b>找到吃的！<br><br>
+    <!-- 2. iOS 安裝引導 -->
+    <div id="ios-guide" class="overlay">
+        <div class="modal-card">
+            <div class="modal-title">😋 餓肚子不能等！</div>
+            <div class="modal-text" style="text-align: left; font-size: 1rem;">
+                把雷達加到桌面，下次肚子餓時，比別人<b>快 10 秒</b>找到吃的！<br><br>
                 1. 點擊瀏覽器下方的 <span class="ios-share-icon">📤</span> 分享按鈕<br>
                 2. 往下滑找到「加入主畫面」<span class="ios-share-icon">➕</span><br>
                 3. 點擊右上角「加入」
             </div>
-            <button class="close-guide-btn" onclick="closeIOSGuide()">我知道了</button>
+            <button class="btn-main" onclick="closeIOSGuide()">我知道了</button>
+        </div>
+    </div>
+
+    <!-- 3. 隨機結果分享彈窗 (新功能!) -->
+    <div id="random-result-modal" class="overlay">
+        <div class="modal-card">
+            <div class="modal-title">✨ 命運的選擇 ✨</div>
+            <div class="modal-text" id="random-result-text" style="font-size: 1.3rem; font-weight: bold; color: #333; margin: 20px 0;">
+                牛肉麵
+            </div>
+            <div class="modal-btn-group">
+                <button class="btn-main" id="btn-go-random">🚀 出發！</button>
+                <button class="btn-line" id="btn-share-random">💬 傳 LINE 解救朋友</button>
+                <button class="btn-cancel" onclick="document.getElementById('random-result-modal').classList.remove('show')">再轉一次</button>
+            </div>
         </div>
     </div>
 
@@ -258,57 +282,43 @@
         // 檢查環境
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
-
-        // 分享連結 (強制用外部瀏覽器開啟)
         const SHARE_URL = "https://freddychen1225.github.io/food-radar/?openExternalBrowser=1";
 
         document.addEventListener('DOMContentLoaded', function() {
             renderCuisines(mealCategories);
             
-            // --- Android 安裝後指引 ---
+            // Android 安裝後指引
             window.addEventListener('appinstalled', (evt) => {
                 if (/Android/i.test(navigator.userAgent)) {
                     document.getElementById('android-guide').classList.add('show');
                 }
             });
 
-            // --- iOS 安裝引導檢查 (第3次搜尋回來) ---
             checkIOSGuide();
         });
 
-        // 檢查是否需要顯示 iOS 引導
         function checkIOSGuide() {
-            // 條件：是 iOS、不是 PWA、還沒看過引導
             if (isIOS && !isPWA && !localStorage.getItem('iosGuideShown')) {
-                // 取得搜尋次數
                 let count = parseInt(localStorage.getItem('searchCount') || '0');
                 if (count >= 3) {
-                    // 延遲 1 秒顯示，避免太突兀
-                    setTimeout(() => {
-                        document.getElementById('ios-guide').classList.add('show');
-                    }, 1000);
+                    setTimeout(() => { document.getElementById('ios-guide').classList.add('show'); }, 1000);
                 }
             }
         }
 
-        // 關閉 iOS 引導並記錄
         function closeIOSGuide() {
             document.getElementById('ios-guide').classList.remove('show');
             localStorage.setItem('iosGuideShown', 'true');
         }
 
-        // 分享功能 (雙軌制)
         function shareToFriend(type, foodName = "") {
             let text = "";
+            // 這裡確保只有純文字+網址，避免 LINE 預覽出錯
             if (type === 'general') {
-                // 方案 C: 推薦好物
                 text = `發現一個超好用的找美食工具！不用下載 App，打開就能用，專治選擇困難症！💊🍔 ${SHARE_URL}`;
             } else if (type === 'random') {
-                // 方案 A: 解救選擇困難
-                text = `救星來了！以後吃飯不用再問『吃什麼』了，直接用這個神器轉一下！🍱✨ ${SHARE_URL}`;
+                text = `救星來了！命運決定吃「${foodName}」！以後吃飯不用再問吃什麼，直接用這個神器轉一下！🍱✨ ${SHARE_URL}`;
             }
-
-            // 喚起 LINE
             const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
             window.location.href = lineUrl;
         }
@@ -386,26 +396,25 @@
             selectedBtn.classList.add('selected');
             selectedCuisineKeyword = keyword;
 
-            // 稍微延遲讓使用者看到選中效果
             setTimeout(() => {
-                // 自訂確認視窗 (為了加入分享按鈕)
-                // 這裡使用簡單的 confirm 做不到雙按鈕，所以我們用一個 trick：
-                // 如果是命運選的，我們還是先用 confirm 讓他決定要不要出發
-                // 但在實際產品中，這一步最好改成自訂 Modal，這邊先維持簡單邏輯，
-                // 若要分享，請使用底部的推薦朋友，或者我們可以在 confirm 後多跳一個提示？
-                // 修正策略：因為 confirm 只有確定/取消，無法加分享按鈕。
-                // 為了不讓程式碼變得太複雜（手刻 Modal），我們先維持底部按鈕。
-                // 如果您希望隨機結果也有分享按鈕，建議之後可以考慮把 alert/confirm 換成 SweetAlert 等套件。
-                // *本次更新先在底部加入常駐分享按鈕*
+                // 使用自訂 Modal 取代原生 confirm
+                const modal = document.getElementById('random-result-modal');
+                document.getElementById('random-result-text').innerText = keyword;
                 
-                if(confirm(`命運決定吃：${keyword}！\n要現在出發嗎？`)) {
+                // 綁定按鈕事件 (避免重複綁定，每次重設 onclick)
+                document.getElementById('btn-go-random').onclick = function() {
+                    modal.classList.remove('show');
                     performSearch(keyword);
-                }
+                };
+                document.getElementById('btn-share-random').onclick = function() {
+                    shareToFriend('random', keyword);
+                };
+                
+                modal.classList.add('show');
             }, 100);
         }
 
         function performSearch(keyword) {
-            // 記錄搜尋次數 (為了 iOS 引導)
             let count = parseInt(localStorage.getItem('searchCount') || '0');
             localStorage.setItem('searchCount', count + 1);
 
@@ -413,7 +422,6 @@
             if (selectedScenarioKeyword) { query += " " + selectedScenarioKeyword; }
             const mapUrl = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
             
-            // iOS PWA 強制跳轉
             if (isIOS && isPWA) {
                 window.location.href = mapUrl;
             } else {
