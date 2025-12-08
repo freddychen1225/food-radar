@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V3.0</title>
+    <title>美食雷達 V3.1</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
@@ -13,7 +13,7 @@
     <meta name="author" content="Freddy">
     
     <!-- 設定 Open Graph 標籤 -->
-    <meta property="og:title" content="美食雷達 V3.0 - 今天吃什麼？">
+    <meta property="og:title" content="美食雷達 V3.1 - 今天吃什麼？">
     <meta property="og:description" content="不用下載 App，打開網頁即可使用！隨機美食推薦、平價正餐搜尋。">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1046/1046747.png">
     <meta property="og:url" content="https://freddychen1225.github.io/food-radar/">
@@ -161,7 +161,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V3.0</h1>
+    <h1>📍 美食雷達 V3.1</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -297,15 +297,23 @@
             localStorage.setItem('iosGuideShown', 'true');
         }
 
+        // --- 分享功能 (含確認預覽) ---
         function shareToFriend(type, foodName = "") {
             let text = "";
+            let confirmMsg = "";
+
             if (type === 'general') {
                 text = `發現一個超好用的找美食工具！不用下載 App，打開就能用，專治選擇困難症！💊🍔\n\n${SHARE_URL}`;
+                confirmMsg = `您即將傳送以下訊息給朋友：\n\n「發現一個超好用的找美食工具！...」\n\n確定要開啟 LINE 嗎？`;
             } else if (type === 'random') {
                 text = `救星來了！命運決定吃「${foodName}」！以後吃飯不用再問吃什麼，直接用這個神器轉一下！🍱✨\n\n${SHARE_URL}`;
+                confirmMsg = `您即將傳送以下訊息給朋友：\n\n「救星來了！命運決定吃 ${foodName}！...」\n\n確定要開啟 LINE 嗎？`;
             }
-            const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
-            window.location.href = lineUrl;
+
+            if (confirm(confirmMsg)) {
+                const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
+                window.location.href = lineUrl;
+            }
         }
 
         function switchMode(mode) {
