@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V2.9</title>
+    <title>美食雷達 V3.0</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
     <meta name="keywords" content="美食雷達, 今天吃什麼, 附近美食, Google Maps 搜尋, 平價美食, 下午茶推薦, 隨機選餐廳, 親子餐廳, 寵物友善">
     <meta name="author" content="Freddy">
+    
+    <!-- 設定 Open Graph 標籤 -->
+    <meta property="og:title" content="美食雷達 V3.0 - 今天吃什麼？">
+    <meta property="og:description" content="不用下載 App，打開網頁即可使用！隨機美食推薦、平價正餐搜尋。">
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1046/1046747.png">
+    <meta property="og:url" content="https://freddychen1225.github.io/food-radar/">
 
     <!-- Google Search Console 驗證 -->
     <meta name="google-site-verification" content="NQhtyIlgmyy8RmQKDZDP-OYrJlMlkIsO3RromfSEclw" /> 
@@ -117,7 +123,6 @@
         .footer a { color: #888; text-decoration: underline; transition: color 0.2s; }
         .footer a:hover { color: var(--primary-color); }
 
-        /* 推薦朋友按鈕 */
         .share-btn-footer {
             background-color: var(--line-color); color: white; border: none;
             padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: bold;
@@ -125,7 +130,6 @@
             box-shadow: 0 2px 8px rgba(6, 199, 85, 0.3); margin-top: 10px;
         }
 
-        /* --- 通用彈窗遮罩 --- */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); z-index: 9999;
@@ -147,30 +151,17 @@
 
         .modal-btn-group { display: flex; flex-direction: column; gap: 10px; }
         
-        .btn-main {
-            background: var(--primary-color); color: white; border: none;
-            padding: 12px; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
-            cursor: pointer; width: 100%;
-        }
-        .btn-line {
-            background: var(--line-color); color: white; border: none;
-            padding: 12px; border-radius: 50px; font-size: 1.0rem; font-weight: bold;
-            cursor: pointer; width: 100%;
-        }
-        .btn-cancel {
-            background: #f1f2f6; color: #7f8fa6; border: none;
-            padding: 12px; border-radius: 50px; font-size: 1rem; font-weight: bold;
-            cursor: pointer; width: 100%;
-        }
+        .btn-main { background: var(--primary-color); color: white; border: none; padding: 12px; border-radius: 50px; font-size: 1.1rem; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-line { background: var(--line-color); color: white; border: none; padding: 12px; border-radius: 50px; font-size: 1.0rem; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-cancel { background: #f1f2f6; color: #7f8fa6; border: none; padding: 12px; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* iOS 引導專用 */
         .ios-share-icon { font-size: 1.5rem; vertical-align: middle; margin: 0 5px; color: #007aff; }
 
     </style>
 </head>
 <body>
 
-    <h1>📍 美食雷達 V2.9</h1>
+    <h1>📍 美食雷達 V3.0</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -217,7 +208,6 @@
         </div>
     </div>
 
-    <!-- 1. Android 安裝引導 (GIF) -->
     <div id="android-guide" class="overlay" onclick="this.classList.remove('show')">
         <div class="modal-card">
             <div class="modal-title">🎉 安裝成功！</div>
@@ -227,7 +217,6 @@
         </div>
     </div>
 
-    <!-- 2. iOS 安裝引導 -->
     <div id="ios-guide" class="overlay">
         <div class="modal-card">
             <div class="modal-title">😋 餓肚子不能等！</div>
@@ -241,7 +230,6 @@
         </div>
     </div>
 
-    <!-- 3. 隨機結果分享彈窗 (新功能!) -->
     <div id="random-result-modal" class="overlay">
         <div class="modal-card">
             <div class="modal-title">✨ 命運的選擇 ✨</div>
@@ -279,7 +267,6 @@
         let selectedScenarioKeyword = "";
         let selectedCuisineKeyword = "";
 
-        // 檢查環境
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
         const SHARE_URL = "https://freddychen1225.github.io/food-radar/?openExternalBrowser=1";
@@ -287,7 +274,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             renderCuisines(mealCategories);
             
-            // Android 安裝後指引
             window.addEventListener('appinstalled', (evt) => {
                 if (/Android/i.test(navigator.userAgent)) {
                     document.getElementById('android-guide').classList.add('show');
@@ -313,11 +299,10 @@
 
         function shareToFriend(type, foodName = "") {
             let text = "";
-            // 這裡確保只有純文字+網址，避免 LINE 預覽出錯
             if (type === 'general') {
-                text = `發現一個超好用的找美食工具！不用下載 App，打開就能用，專治選擇困難症！💊🍔 ${SHARE_URL}`;
+                text = `發現一個超好用的找美食工具！不用下載 App，打開就能用，專治選擇困難症！💊🍔\n\n${SHARE_URL}`;
             } else if (type === 'random') {
-                text = `救星來了！命運決定吃「${foodName}」！以後吃飯不用再問吃什麼，直接用這個神器轉一下！🍱✨ ${SHARE_URL}`;
+                text = `救星來了！命運決定吃「${foodName}」！以後吃飯不用再問吃什麼，直接用這個神器轉一下！🍱✨\n\n${SHARE_URL}`;
             }
             const lineUrl = `https://line.me/R/msg/text/?${encodeURIComponent(text)}`;
             window.location.href = lineUrl;
@@ -397,11 +382,9 @@
             selectedCuisineKeyword = keyword;
 
             setTimeout(() => {
-                // 使用自訂 Modal 取代原生 confirm
                 const modal = document.getElementById('random-result-modal');
                 document.getElementById('random-result-text').innerText = keyword;
                 
-                // 綁定按鈕事件 (避免重複綁定，每次重設 onclick)
                 document.getElementById('btn-go-random').onclick = function() {
                     modal.classList.remove('show');
                     performSearch(keyword);
