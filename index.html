@@ -352,8 +352,11 @@
             
             // 處理街口連結邏輯
             const jkoLink = document.getElementById('jkoLink');
-            const qrHint = document.getElementById('qrHint');
-            jkoLink.href = "jkopay://scan?url=" + myTwqrString;
+            // 直接把這個按鈕隱藏，不管手機還電腦，都只用掃碼方式
+            if (jkoLink) {
+               jkoLink.style.display = 'none';
+            }
+
 
             // 如果是電腦版，隱藏街口喚起按鈕
             if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
