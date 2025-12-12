@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V3.2</title>
+    <title>美食雷達 V3.4</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
@@ -13,7 +13,7 @@
     <meta name="author" content="Freddy">
     
     <!-- 設定 Open Graph 標籤 -->
-    <meta property="og:title" content="美食雷達 V3.2 - 今天吃什麼？">
+    <meta property="og:title" content="美食雷達 V3.4 - 今天吃什麼？">
     <meta property="og:description" content="不用下載 App，打開網頁即可使用！隨機美食推薦、平價正餐搜尋。">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1046/1046747.png">
     <meta property="og:url" content="https://freddychen1225.github.io/food-radar/">
@@ -177,7 +177,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V3.2</h1>
+    <h1>📍 美食雷達 V3.4</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -267,11 +267,17 @@
         </div>
     </div>
 
-    <!-- 贊助 Modal -->
+    <!-- 贊助 Modal (已更新 v3.4) -->
     <div id="supportModal" class="overlay">
         <div class="support-modal-content">
             <div class="support-close" onclick="closeSupportModal()">&times;</div>
-            <h3 style="margin: 5px 0 15px; color: #333; text-align: center;">支持美食雷達 🎯</h3>
+            <h3 style="margin: 5px 0 5px; color: #333; text-align: center;">支持美食雷達 🎯</h3>
+            
+            <!-- 新增：自由樂捐文字 -->
+            <p style="text-align: center; color: #ff6b6b; font-weight: bold; margin: 0 0 15px; font-size: 14px;">
+                [ 自由樂捐，金額隨喜 ]
+            </p>
+            
             <p style="color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.5; text-align: center;">
                 您的支持能讓伺服器繼續運作<br>並開發更多好用功能！
             </p>
@@ -286,21 +292,25 @@
                     </button>
                 </a>
                 
-                <div style="font-size: 12px; color: #888; margin-top: 10px;">
-                    <span id="qrHint">或掃描下方 QR Code</span><br>
-                    <!-- 請記得放圖片到 images 資料夾 -->
+                <div style="font-size: 13px; color: #888; margin-top: 10px;">
+                    <span id="qrHint" style="font-weight: bold; color: #d02020;">[ 請打開街口支付掃描 ]</span><br>
                     <img src="images/jko_qr.jpg" alt="街口QR Code" style="width: 140px; margin-top: 8px; border-radius: 8px; border: 1px solid #eee;">
                 </div>
             </div>
 
             <!-- 2. 銀行轉帳 -->
             <div class="support-box" style="background: #F0F7FF; border-color: #D0E0FF;">
-                <div style="font-weight: bold; color: #0066CC; margin-bottom: 8px; font-size: 15px;">銀行轉帳 (LINE Pay可轉)</div>
+                <div style="font-weight: bold; color: #0066CC; margin-bottom: 8px; font-size: 15px;">銀行轉帳</div>
+                
                 <div style="background: white; padding: 10px; border-radius: 6px; border: 1px dashed #B0C4DE; text-align: left; margin-bottom: 8px;">
-                    <div style="font-size: 12px; color: #666;">銀行代碼：<strong style="color: #333; font-size: 14px;">809 凱基銀行</strong></div>
+                    <div style="font-size: 14px; color: #333; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 5px;">
+                        銀行代碼請選：<strong style="color: #d63031; font-size: 16px;">809 凱基銀行</strong>
+                    </div>
+                    
                     <div style="font-size: 12px; color: #666; margin-top: 4px;">銀行帳號：</div>
                     <div id="bankAccount" style="font-size: 18px; font-weight: bold; color: #333; letter-spacing: 1px; font-family: monospace;">60710400001243</div>
                 </div>
+                
                 <button onclick="copyAccount()" style="width: 100%; background: #0066CC; color: white; border: none; padding: 10px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: bold;">
                     📋 複製帳號
                 </button>
@@ -309,11 +319,9 @@
     </div>
 
     <script>
-        // --- 贊助功能資料設定 (請修改這裡) ---
-        // 你的 TWQR 字串
+        // --- 贊助功能資料設定 ---
         const myTwqrString = "TWQRP%3a%2f%2f%e5%80%8b%e4%ba%ba%e8%bd%89%e5%b8%b3%2f158%2f02%2fV1%3fD5%3d396%26D6%3d0000000900615072%26D10%3d901%26D97%3d20251212151945%26D98%3d39601527998570300000001%26D99%3dABA414E1";
         
-        // --- 資料庫 ---
         const mealCategories = [
             { name: "牛肉麵", icon: "🍜" }, { name: "便當簡餐", icon: "🍱" }, { name: "小吃/麵店", icon: "🍢" },
             { name: "滷味", icon: "🥘" }, { name: "水餃/鍋貼", icon: "🥟" }, { name: "火鍋", icon: "🍲" },
