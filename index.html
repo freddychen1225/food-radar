@@ -358,9 +358,7 @@
             // 如果是電腦版，隱藏街口喚起按鈕
             if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
                 jkoLink.style.display = 'none';
-                qrHint.innerText = "請使用手機掃描";
-                qrHint.style.fontSize = "14px";
-                qrHint.style.fontWeight = "bold";
+                
             }
             
             window.addEventListener('appinstalled', (evt) => {
