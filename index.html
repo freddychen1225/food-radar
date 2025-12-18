@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <!-- 網頁標題 -->
-    <title>美食雷達 V3.4</title>
+    <title>美食雷達 V3.5</title>
 
     <!-- SEO 優化設定 -->
     <meta name="description" content="美食雷達 (Food Radar) 是一款免費的 Google Maps 智慧搜尋工具。解決「今天吃什麼」的煩惱，提供隨機美食推薦、平價正餐搜尋及下午茶點心建議。不用下載 App，打開網頁即可使用！">
@@ -13,7 +13,7 @@
     <meta name="author" content="Freddy">
     
     <!-- 設定 Open Graph 標籤 -->
-    <meta property="og:title" content="美食雷達 V3.4 - 今天吃什麼？">
+    <meta property="og:title" content="美食雷達 V3.5 - 今天吃什麼？">
     <meta property="og:description" content="不用下載 App，打開網頁即可使用！隨機美食推薦、平價正餐搜尋。">
     <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/1046/1046747.png">
     <meta property="og:url" content="https://freddychen1225.github.io/food-radar/">
@@ -125,14 +125,30 @@
             display: flex; gap: 10px; justify-content: center; width: 100%;
         }
 
+        /* 呼吸動畫定義 */
+        @keyframes pulse-btn {
+            0% { transform: scale(1); box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 12px rgba(255, 107, 107, 0.5); }
+            100% { transform: scale(1); box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3); }
+        }
+
         .share-btn-footer, .support-btn-footer {
             background-color: var(--line-color); color: white; border: none;
             padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; font-weight: bold;
             cursor: pointer; display: flex; align-items: center; gap: 5px;
             box-shadow: 0 2px 8px rgba(6, 199, 85, 0.3);
+            transition: all 0.2s;
         }
         .support-btn-footer {
-            background-color: #ff6b6b; box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+            background-color: #ff6b6b; 
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+            /* 套用呼吸動畫: 2秒一次，無限循環 */
+            animation: pulse-btn 2s infinite ease-in-out;
+        }
+        /* 滑鼠移上去時暫停動畫，避免干擾 */
+        .support-btn-footer:hover {
+            animation: none;
+            transform: scale(1.05);
         }
 
         .footer-credit { color: #888; font-size: 0.9rem; }
@@ -177,7 +193,7 @@
 </head>
 <body>
 
-    <h1>📍 美食雷達 V3.4</h1>
+    <h1>📍 美食雷達 V3.5</h1>
     <div class="subtitle">Google Map 智慧快搜</div>
 
     <div class="mode-switch">
@@ -267,20 +283,33 @@
         </div>
     </div>
 
-    <!-- 贊助 Modal (已更新 v3.4) -->
+    <!-- 贊助 Modal (V3.5 更新版) -->
     <div id="supportModal" class="overlay">
         <div class="support-modal-content">
             <div class="support-close" onclick="closeSupportModal()">&times;</div>
-            <h3 style="margin: 5px 0 5px; color: #333; text-align: center;">支持美食雷達 🎯</h3>
+            <h3 style="margin: 5px 0 10px; color: #333; text-align: center;">支持美食雷達 🎯</h3>
             
-            <!-- 新增：自由樂捐文字 -->
-            <p style="text-align: center; color: #ff6b6b; font-weight: bold; margin: 0 0 15px; font-size: 14px;">
-                [ 自由樂捐，金額隨喜 ]
-            </p>
-            
-            <p style="color: #666; font-size: 13px; margin-bottom: 20px; line-height: 1.5; text-align: center;">
-                您的支持能讓伺服器繼續運作<br>並開發更多好用功能！
-            </p>
+            <!-- 價目表 -->
+            <div style="background: #fff8e1; border-radius: 10px; padding: 12px; margin-bottom: 15px; border: 1px solid #ffe082;">
+                <p style="text-align: center; color: #f57c00; font-weight: bold; margin: 0 0 8px; font-size: 14px;">
+                    👇 請選擇您想贊助的心意 👇
+                </p>
+                <div style="display: flex; justify-content: space-between; gap: 5px; font-size: 13px; color: #555;">
+                    <div style="flex: 1; text-align: center; background: white; padding: 8px 2px; border-radius: 6px; border: 1px solid #eee;">
+                        🍵 青茶<br><strong style="color: #ff6b6b; font-size: 15px;">$30</strong>
+                    </div>
+                    <div style="flex: 1; text-align: center; background: white; padding: 8px 2px; border-radius: 6px; border: 2px solid #ff6b6b; position: relative;">
+                        <span style="position: absolute; top: -8px; right: -5px; background: #ff6b6b; color: white; font-size: 10px; padding: 2px 5px; border-radius: 10px;">推薦</span>
+                        🍱 滷肉飯<br><strong style="color: #ff6b6b; font-size: 15px;">$60</strong>
+                    </div>
+                    <div style="flex: 1; text-align: center; background: white; padding: 8px 2px; border-radius: 6px; border: 1px solid #eee;">
+                        🚀 加速<br><strong style="color: #ff6b6b; font-size: 15px;">$100</strong>
+                    </div>
+                </div>
+                <p style="font-size: 11px; color: #999; text-align: center; margin: 8px 0 0;">
+                    當然，任何金額都是巨大的鼓勵！❤️
+                </p>
+            </div>
 
             <!-- 1. 街口支付 -->
             <div class="support-box" style="background: #FFF0F0; border-color: #FFD0D0;">
@@ -296,9 +325,10 @@
                     <span id="qrHint" style="font-weight: bold; color: #d02020;">[ 請打開街口支付掃描 ]</span><br>
                     <img src="images/jko_qr.jpg" alt="街口QR Code" style="width: 140px; margin-top: 8px; border-radius: 8px; border: 1px solid #eee;">
 
-                    <!-- 新增的小提醒 -->
+                    <!-- 小提醒 -->
                     <div style="font-size: 12px; color: #999; margin-top: 6px; line-height: 1.4;">
                       手機可截圖存至相簿<br>再由街口 APP 打開掃描讀取照片
+                    </div>
                 </div>
             </div>
 
@@ -356,16 +386,10 @@
             
             // 處理街口連結邏輯
             const jkoLink = document.getElementById('jkoLink');
-            // 直接把這個按鈕隱藏，不管手機還電腦，都只用掃碼方式
+            
+            // 一律隱藏按鈕，只用掃碼
             if (jkoLink) {
                jkoLink.style.display = 'none';
-            }
-
-
-            // 如果是電腦版，隱藏街口喚起按鈕
-            if (!/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                jkoLink.style.display = 'none';
-                
             }
             
             window.addEventListener('appinstalled', (evt) => {
